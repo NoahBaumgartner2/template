@@ -74,10 +74,6 @@ inhaltlich neu zu schreiben (nicht nur sed):
 
 - `app/views/layouts/application.html.erb` — `<title>`, `<meta description>`,
   Navi-Logo-Text, Footer, Kontakt-E-Mail (`info@example.com`)
-- `app/views/pages/home.html.erb`
-- `app/views/pages/leistungen.html.erb`
-- `app/views/pages/team.html.erb`
-- `app/views/pages/kontakt.html.erb` — Adresse, Telefon, E-Mail
 - `README.md` — Projektname/Beschreibung
 - `app/assets/tailwind/application.css` — `@theme`-Farben (`--color-brand*`)
   auf die Markenfarben des Projekts setzen
