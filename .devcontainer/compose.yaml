@@ -1,0 +1,33 @@
+name: template
+
+services:
+  rails-app:
+    build:
+      # Build-Kontext ist das Projekt-Root (eine Ebene über .devcontainer)
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    # Hält den Container am Leben, anstatt bei einem Rails-Fehler abzustürzen!
+    command: sleep infinity
+    volumes:
+      - ..:/rails:cached
+    ports:
+      # Host 3002 -> Container 3000
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://postgres:password@db:5432/template_development
+      RAILS_ENV: development
+
+  db:
+    image: postgres:15
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres-data:

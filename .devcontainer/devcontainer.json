@@ -1,0 +1,39 @@
+{
+  "name": "template",
+  "dockerComposeFile": ["compose.yaml"],
+  "service": "rails-app",
+  "workspaceFolder": "/rails",
+  
+  // 1. NEU: Sag VS Code, dass er sich als 'vscode' statt 'root' einloggen soll
+  "remoteUser": "vscode", 
+
+  "features": {
+    // 2. NEU: Dieses Feature erstellt den User und macht das Terminal hübsch (mit Git-Branch)
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "username": "vscode"
+    },
+    "ghcr.io/devcontainers/features/ruby:1": {
+        "version": "3.4.4"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/rails/devcontainer/features/activestorage": {},
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {"moby":false},
+    "ghcr.io/rails/devcontainer/features/postgres-client": {}
+  },
+
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": {
+      "label": "Rails (template)",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "shutdownAction": "stopCompose",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "Shopify.ruby-lsp"
+      ]
+    }
+  }
+}

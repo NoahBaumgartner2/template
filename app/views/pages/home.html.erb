@@ -1,0 +1,31 @@
+<%# Platzhalter-Startseite – pro Projekt anpassen %>
+<section class="bg-brand-light">
+  <div class="max-w-6xl mx-auto px-6 py-24 md:py-32 text-center">
+    <p class="font-heading text-sm font-semibold uppercase tracking-wider text-brand mb-4">Template-Projekt</p>
+    <h1 class="font-heading text-4xl md:text-6xl font-bold text-ink-900 mb-6">
+      Rails + Tailwind + Docker Starter
+    </h1>
+    <p class="text-lg text-mist-600 max-w-2xl mx-auto mb-10">
+      Platzhaltertext. Diese Vorlage enthält die komplette Infrastruktur
+      (Dev-Container, PostgreSQL, TailwindCSS). Siehe <code>CLAUDE_SETUP.md</code>,
+      um daraus ein echtes Projekt zu machen.
+    </p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <%= link_to "Kontakt", kontakt_path,
+            class: "inline-block bg-brand text-white px-8 py-3 rounded-full font-medium hover:bg-brand-dark transition-colors" %>
+      <%= link_to "Leistungen", leistungen_path,
+            class: "inline-block border border-brand text-brand px-8 py-3 rounded-full font-medium hover:bg-white transition-colors" %>
+    </div>
+  </div>
+</section>
+
+<section class="max-w-6xl mx-auto px-6 py-20">
+  <div class="grid md:grid-cols-3 gap-8">
+    <% ["Block 1", "Block 2", "Block 3"].each do |title| %>
+      <div class="bg-white rounded-2xl border border-mist-100 p-8">
+        <h2 class="font-heading text-xl font-semibold mb-3"><%= title %></h2>
+        <p class="text-mist-600 text-sm">Platzhalter: kurze Beschreibung.</p>
+      </div>
+    <% end %>
+  </div>
+</section>

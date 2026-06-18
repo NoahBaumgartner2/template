@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Sora", ui-sans-serif, system-ui, sans-serif;
+
+  /* Neutrale Basis-Palette (pro Projekt anpassen) */
+  --color-brand: #0e7c86;
+  --color-brand-dark: #0a5d65;
+  --color-brand-light: #e6f4f5;
+
+  --color-ink-900: #0c1417;
+  --color-ink-700: #2a3338;
+  --color-mist-600: #56636a;
+  --color-mist-100: #e7edee;
+  --color-mist-50:  #f4f8f8;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-ink-900);
+    background-color: var(--color-mist-50);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+}
