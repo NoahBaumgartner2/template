@@ -1,55 +1,32 @@
 <!DOCTYPE html>
 <html lang="de-CH">
   <head>
-    <title>Template &mdash; Rails Starter</title>
-    <meta name="description" content="Template-Projekt: Rails 7.1 + TailwindCSS + PostgreSQL + Docker. Als Vorlage für neue Projekte.">
+    <%# TBD: Titel + Beschreibung pro Projekt setzen %>
+    <title>Neues Projekt</title>
+    <meta name="description" content="">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@500;600;700&display=swap" rel="stylesheet">
 
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="font-sans text-ink-900 antialiased min-h-screen flex flex-col">
-
+  <body class="min-h-screen flex flex-col antialiased">
     <%# Flash %>
     <% if flash[:notice] %>
-      <div class="fixed top-24 left-1/2 -translate-x-1/2 z-[200] bg-brand text-white px-6 py-4 rounded-xl shadow-xl text-sm max-w-sm text-center">
+      <div class="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-ink-900 text-white px-6 py-4 rounded-xl shadow-xl text-sm max-w-sm text-center">
         <%= flash[:notice] %>
       </div>
     <% end %>
 
-    <%# Navigation %>
-    <% nav = [["Start", root_path], ["Leistungen", leistungen_path], ["Team", team_path], ["Kontakt", kontakt_path]] %>
-    <header class="bg-white/90 backdrop-blur border-b border-mist-100 sticky top-0 z-50">
-      <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <a href="<%= root_path %>" class="font-heading font-bold text-lg text-brand">
-          Template
-        </a>
-        <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
-          <% nav.each do |label, path| %>
-            <%= link_to label, path,
-                  class: "transition-colors hover:text-brand #{request.path == path ? 'text-brand' : 'text-ink-700'}" %>
-          <% end %>
-        </nav>
-      </div>
-    </header>
+    <%# TBD: Header / Navigation pro Projekt hier aufbauen %>
 
     <main class="flex-1">
       <%= yield %>
     </main>
 
-    <footer class="bg-ink-900 text-mist-100">
-      <div class="max-w-6xl mx-auto px-6 py-10 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
-        <p>&copy; <%= Date.current.year %> Template. Alle Rechte vorbehalten.</p>
-        <a href="mailto:info@example.com" class="hover:text-white transition-colors">info@example.com</a>
-      </div>
-    </footer>
+    <%# TBD: Footer pro Projekt hier aufbauen %>
   </body>
 </html>

@@ -46,7 +46,8 @@ Rails.application.configure do
 
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
   # Can be used together with config.force_ssl for Strict-Transport-Security and secure cookies.
-  # config.assume_ssl = true
+  # Erforderlich hinter dem Kamal-Proxy (terminiert SSL).
+  config.assume_ssl = true
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = true
@@ -76,6 +77,26 @@ Rails.application.configure do
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   # config.action_mailer.raise_delivery_errors = false
+
+  # --- Optionaler E-Mail-Versand (z. B. Kontaktformular) -------------------
+  # Erst aktivieren, wenn die App wirklich Mails verschickt. Dann auch die
+  # Secrets SMTP_USERNAME / SMTP_PASSWORD in deploy.yml (env.secret) und als
+  # GitHub Secrets ergänzen. TBD: Host/Domain/SMTP-Server pro Projekt setzen.
+  #
+  # config.action_mailer.raise_delivery_errors = true
+  # config.action_mailer.delivery_method = :smtp
+  # config.action_mailer.default_url_options = { host: "TBD_DOMAIN", protocol: "https" }
+  # config.action_mailer.smtp_settings = {
+  #   address:              "TBD_SMTP_HOST",
+  #   port:                 465,
+  #   domain:               "TBD_DOMAIN",
+  #   authentication:       :login,
+  #   user_name:            ENV["SMTP_USERNAME"],
+  #   password:             ENV["SMTP_PASSWORD"],
+  #   ssl:                  true,
+  #   enable_starttls_auto: false
+  # }
+  # -------------------------------------------------------------------------
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).

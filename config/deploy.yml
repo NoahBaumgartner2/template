@@ -1,0 +1,67 @@
+# Name der App (Identifier — wird beim Projekt-Setup mit-umbenannt)
+service: template
+
+# GitHub Container Registry (Identifier)
+image: noahbaumgartner2/template
+
+# Production-Server (immer derselbe Host)
+servers:
+  web:
+    - 179.237.87.63
+
+volumes:
+  - /var/lib/template/storage:/rails/storage
+
+# SSL (HTTPS) automatisch via Let's Encrypt
+# TBD: hier die Production-Domain eintragen (z. B. meine-domain.ch)
+proxy:
+  ssl: true
+  host: TBD_DOMAIN
+  app_port: 3000
+
+# Wo das gebaute Docker-Image gespeichert wird
+registry:
+  server: ghcr.io
+  username: noahbaumgartner2
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+# Umgebungsvariablen für die Rails App
+env:
+  clear:
+    DB_HOST: template-db # interner Name des DB-Accessory-Containers
+    DB_USERNAME: template
+    DB_NAME: template_production
+  secret:
+    - RAILS_MASTER_KEY
+    - POSTGRES_PASSWORD
+    # Optional (nur falls die App E-Mails versendet — siehe production.rb):
+    # - SMTP_USERNAME
+    # - SMTP_PASSWORD
+
+# Zubehör: PostgreSQL Datenbank-Container
+accessories:
+  db:
+    image: postgres:16
+    host: 179.237.87.63
+    port: "127.0.0.1:5432:5432"
+    env:
+      clear:
+        POSTGRES_USER: template
+        POSTGRES_DB: template_production
+      secret:
+        - POSTGRES_PASSWORD
+    directories:
+      - data:/var/lib/postgresql/data
+
+# Configure the image builder
+builder:
+  arch: amd64
+
+aliases:
+  migrate: app exec --interactive --reuse 'bin/rails db:migrate'
+
+ssh:
+  user: ubuntu
+  keys:
+    - ~/.ssh/template_deploy
