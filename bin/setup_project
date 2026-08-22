@@ -1,0 +1,116 @@
+#!/usr/bin/env bash
+# Interaktives Setup-Formular: verwandelt diese Vorlage in ein benanntes Projekt.
+# Ersetzt die Handarbeit aus CLAUDE_SETUP.md Schritt 1-2 + 7 (Namen/Domain/IP/Ports).
+# Deployment-Felder (Domain/Staging-Domain/Server-IP) können auf TBD gelassen werden,
+# um sie später nachzutragen. GitHub Secrets/SSH-Key bleiben Sache des
+# kamal-deploy-setup Skills (Claude Code) — dieses Skript fasst keine Secrets an.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+if ! grep -q "^module Template$" config/application.rb 2>/dev/null; then
+  echo "config/application.rb enthält kein 'module Template' mehr — Setup wurde schon ausgeführt?"
+  exit 1
+fi
+
+ask() {
+  local prompt="$1" default="$2" var
+  read -r -p "$prompt [$default]: " var
+  echo "${var:-$default}"
+}
+
+echo "=== Projekt-Setup ==="
+while true; do
+  project_name=$(ask "Projektname (snake_case, z.B. zahnarzt_kirchlindach)" "")
+  if [[ "$project_name" =~ ^[a-z][a-z0-9_]*$ ]] && [[ "$project_name" != "template0" ]] && [[ "$project_name" != "template1" ]]; then
+    break
+  fi
+  echo "Ungültig: nur a-z0-9_, mit Buchstabe beginnend, nicht 'template0'/'template1'."
+done
+
+default_display=$(echo "$project_name" | sed -E 's/_/ /g; s/(^| )([a-z])/\1\U\2/g')
+display_name=$(ask "Anzeigename (Titel/Navigation)" "$default_display")
+
+PROJECT_NAME_UPPER=$(echo "$project_name" | tr '[:lower:]' '[:upper:]')
+ProjectName=$(echo "$project_name" | sed -E 's/(^|_)([a-z])/\U\2/g')
+
+echo
+echo "--- Deployment (Enter = TBD, später nachtragbar) ---"
+domain=$(ask "Production-Domain (Enter = TBD)" "TBD")
+staging_domain=$(ask "Staging-Domain (Enter = TBD)" "TBD")
+server_ip=$(ask "Server-IP (Enter = Standard-Server 179.237.87.63 behalten)" "179.237.87.63")
+ssh_user=$(ask "SSH-User auf dem Server" "ubuntu")
+
+echo
+echo "--- Lokale Ports (Host-Seite, nur bei Portkonflikten ändern) ---"
+web_port=$(ask "Rails Host-Port" "3000")
+db_port=$(ask "Postgres Host-Port" "5432")
+
+echo
+echo "Zusammenfassung:"
+echo "  project_name   = $project_name"
+echo "  ProjectName    = $ProjectName"
+echo "  PROJECT_NAME   = $PROJECT_NAME_UPPER"
+echo "  display_name   = $display_name"
+echo "  domain         = $domain"
+echo "  staging_domain = $staging_domain"
+echo "  server_ip      = $server_ip"
+echo "  ssh_user       = $ssh_user"
+echo "  web_port       = $web_port"
+echo "  db_port        = $db_port"
+read -r -p "Weiter? [Y/n]: " confirm
+[[ "${confirm:-Y}" =~ ^[Yy]$ ]] || { echo "Abgebrochen."; exit 1; }
+
+FILES="config/application.rb config/database.yml config/cable.yml \
+config/environments/production.rb config/deploy.yml config/deploy.staging.yml \
+docs/deploy-ssh-key-setup.md docs/staging-setup.md docker-compose.yml \
+.devcontainer/compose.yaml .devcontainer/devcontainer.json .devcontainer/Dockerfile"
+
+for f in $FILES; do
+  [[ -f "$f" ]] || continue
+  sed -i \
+    -e "s/TEMPLATE/${PROJECT_NAME_UPPER}/g" \
+    -e "s/Template/${ProjectName}/g" \
+    -e "s/template/${project_name}/g" \
+    "$f"
+done
+
+# Domain / IP / SSH-User in den Deploy-Configs (TBD bleibt TBD, wenn nichts eingegeben wurde)
+if [[ "$domain" != "TBD" ]]; then
+  sed -i "s/TBD_DOMAIN/${domain}/g" config/deploy.yml
+fi
+if [[ "$staging_domain" != "TBD" ]]; then
+  sed -i "s/TBD_STAGING_DOMAIN/${staging_domain}/g" config/deploy.staging.yml
+fi
+if [[ "$server_ip" != "179.237.87.63" ]] && [[ "$server_ip" != "TBD" ]]; then
+  sed -i "s/179\.237\.87\.63/${server_ip}/g" config/deploy.yml config/deploy.staging.yml docs/deploy-ssh-key-setup.md
+fi
+if [[ "$ssh_user" != "ubuntu" ]]; then
+  sed -i "s/user: ubuntu/user: ${ssh_user}/g" config/deploy.yml config/deploy.staging.yml
+  sed -i "s/ubuntu@/${ssh_user}@/g" docs/deploy-ssh-key-setup.md
+fi
+
+# Ports (Host-Seite)
+if [[ "$web_port" != "3000" ]]; then
+  sed -i "s/\"3000:3000\"/\"${web_port}:3000\"/" docker-compose.yml .devcontainer/compose.yaml
+  sed -i "s/\"forwardPorts\": \[3000\]/\"forwardPorts\": [${web_port}]/" .devcontainer/devcontainer.json
+  sed -i "s/\"3000\":/\"${web_port}\":/" .devcontainer/devcontainer.json
+fi
+if [[ "$db_port" != "5432" ]]; then
+  sed -i "s/\"5432:5432\"/\"${db_port}:5432\"/" docker-compose.yml .devcontainer/compose.yaml
+fi
+
+# Sichtbarer Titel in der README
+sed -i "1s/.*/# ${display_name}/" README.md
+
+echo
+echo "=== Fertig ==="
+echo "Ersetzt: project_name=${project_name}, ProjectName=${ProjectName}"
+[[ "$domain" == "TBD" ]] && echo "TBD: Production-Domain in config/deploy.yml nachtragen (proxy.host: TBD_DOMAIN)"
+[[ "$staging_domain" == "TBD" ]] && echo "TBD: Staging-Domain in config/deploy.staging.yml nachtragen (proxy.host: TBD_STAGING_DOMAIN)"
+echo
+echo "Nächste Schritte:"
+echo "  1. Branding/Inhalt aufbauen (Layout, Startseite, Tailwind-Farben) — siehe CLAUDE_SETUP.md Schritt 3"
+echo "  2. docker compose up -d --build && docker compose exec web bin/rails credentials:edit"
+echo "  3. Sobald Domain/IP final sind: den kamal-deploy-setup Skill (Claude Code) laufen lassen,"
+echo "     um SSH-Key, GitHub Secrets und das erste Deployment einzurichten."
+echo "  4. CLAUDE_SETUP.md kann danach gelöscht werden."

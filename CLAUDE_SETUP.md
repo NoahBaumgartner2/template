@@ -23,6 +23,13 @@ ohne fertiges Branding/Layout, damit jedes Projekt frisch und eigenständig auss
 (Schritt 3), Credentials neu erzeugen (Schritt 5), Domain + GitHub Secrets setzen
 (Schritt 7), pushen (Schritt 8).
 
+> **Abkürzung:** `bin/setup_project` fragt Projektname, Domain(s), Server-IP,
+> SSH-User und Ports interaktiv ab und erledigt Schritt 1–2 sowie die
+> Domain/IP/Port-Teile von Schritt 7 automatisch. Domain/Staging-Domain/IP
+> können dabei auf `TBD` gelassen werden, um sie später nachzutragen. Ersetzt
+> **nicht** Schritt 3 (Branding), 5 (Credentials) und die GitHub-Secrets/SSH-Key-
+> Einrichtung aus Schritt 7 (dafür den `kamal-deploy-setup` Skill verwenden).
+
 ---
 
 ## 0. Den Projektnamen festlegen

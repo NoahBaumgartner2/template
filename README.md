@@ -4,9 +4,10 @@ Wiederverwendbare Projektvorlage. Enthält die komplette Infrastruktur eines
 Rails-Projekts mit TailwindCSS, PostgreSQL und Docker / Dev-Container (inkl.
 eigenem User, Git, GitHub CLI und Claude Code im Container).
 
-> **Neues Projekt starten?** Lies zuerst **[`CLAUDE_SETUP.md`](CLAUDE_SETUP.md)** —
-> dort steht Schritt für Schritt, was umbenannt/angepasst werden muss, um aus
-> dieser Vorlage ein offizielles, benanntes Projekt zu machen.
+> **Neues Projekt starten?** `bin/setup_project` ausführen — fragt Projektname,
+> Domain(s), Server-IP und Ports interaktiv ab (Deployment-Felder können auf
+> `TBD` gelassen werden). Für alles Weitere (Branding, Credentials, GitHub
+> Secrets) siehe **[`CLAUDE_SETUP.md`](CLAUDE_SETUP.md)**.
 
 ## Tech-Stack
 
